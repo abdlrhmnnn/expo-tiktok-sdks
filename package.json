@@ -5,21 +5,25 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "scripts": {
-    "build": "expo-module build",
     "clean": "expo-module clean",
     "lint": "expo-module lint",
     "test": "expo-module test",
-    "prepare": "expo-module prepare",
     "prepublishOnly": "expo-module prepublishOnly",
     "expo-module": "expo-module",
     "open:ios": "xed example/ios",
-    "open:android": "open -a \"Android Studio\" example/android"
+    "open:android": "open -a \"Android Studio\" example/android",
+    "typecheck": "tsc --noEmit",
+    "build": "expo-module build",
+    "build:plugin": "tsc --build plugin/tsconfig.json",
+    "prepare": "npm run build && npm run build:plugin"
   },
   "keywords": [
     "react-native",
     "expo",
     "expo-tiktok-sdk",
-    "ExpoTiktokSdk"
+    "ExpoTiktokSdk",
+    "tiktok",
+    "ads"
   ],
   "repository": "https://github.com/abdlrhmnnn/expo-tiktok-sdk.git",
   "bugs": {
@@ -28,16 +32,35 @@
   "author": "Abdelrahman Mohammed <abdlrhmnnn@gmail.com> (https://github.com/abdlrhmnnn)",
   "license": "MIT",
   "homepage": "https://github.com/abdlrhmnnn/expo-tiktok-sdk.git#readme",
-  "dependencies": {},
+  "dependencies": {
+    "expo-modules-core": "^1.11.0"
+  },
   "devDependencies": {
     "@types/react": "~18.3.12",
+    "@types/react-native": "^0.72.0",
     "expo-module-scripts": "^4.0.4",
     "expo": "~52.0.0",
-    "react-native": "0.76.0"
+    "react-native": "0.72.10",
+    "react-native-typescript-transformer": "^1.2.13",
+    "@expo/config-plugins": "^7.0.0",
+    "typescript": "^5.3.0",
+    "@types/node": "^20.0.0",
+    "@babel/core": "^7.20.0"
   },
   "peerDependencies": {
     "expo": "*",
     "react": "*",
     "react-native": "*"
-  }
+  },
+  "expo": {
+    "plugin": "./app.plugin.js"
+  },
+  "files": [
+    "build",
+    "plugin/build",
+    "app.plugin.js",
+    "src",
+    "android",
+    "ios"
+  ]
 }

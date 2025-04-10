@@ -25,6 +25,17 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "../app.plugin.js",
+        {
+          "iosAppId": "6502907052",
+          "androidAppId": "app.trevi.fintech",
+          "iosDeepLinkScheme": "your-scheme",
+          "androidDeepLinkHost": "your.domain.com"
+        }
+      ]
+    ]
   }
 }

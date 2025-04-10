@@ -1,19 +1,28 @@
-import type { StyleProp, ViewStyle } from 'react-native';
-
-export type OnLoadEventPayload = {
-  url: string;
+export type InitializeParams = {
+  android?: {
+    appId: string;
+    tiktokAppId: string;
+    accessToken?: string;
+  };
+  ios?: {
+    appId: string;
+    tiktokAppId: string;
+    accessToken?: string;
+  };
+  debug?: boolean;
+  disableAutoEvents?: boolean;
 };
 
-export type ExpoTiktokSdkModuleEvents = {
-  onChange: (params: ChangeEventPayload) => void;
+export type TrackEventParams = {
+  eventName: string;
+  properties?: Record<string, any>;
 };
 
-export type ChangeEventPayload = {
-  value: string;
+export type IdentifyParams = {
+  externalId?: string;
+  externalUserName?: string;
+  phoneNumber?: string;
+  email?: string;
 };
 
-export type ExpoTiktokSdkViewProps = {
-  url: string;
-  onLoad: (event: { nativeEvent: OnLoadEventPayload }) => void;
-  style?: StyleProp<ViewStyle>;
-};
+export type TrackingStatus = "authorized" | "denied" | "unavailable";

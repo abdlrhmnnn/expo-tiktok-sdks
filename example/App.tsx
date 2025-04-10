@@ -1,73 +1,67 @@
-import { useEvent } from 'expo';
-import ExpoTiktokSdk, { ExpoTiktokSdkView } from 'expo-tiktok-sdk';
-import { Button, SafeAreaView, ScrollView, Text, View } from 'react-native';
+import { useEffect, useState } from "react";
+import { Button, StyleSheet, Text, View } from "react-native";
+import * as ExpoTiktokSdk from "expo-tiktok-sdk";
 
 export default function App() {
-  const onChangePayload = useEvent(ExpoTiktokSdk, 'onChange');
+  const [status, setStatus] = useState("initializing...");
+
+  useEffect(() => {
+    initializeTikTok();
+  }, []);
+
+  async function initializeTikTok() {
+    try {
+      await ExpoTiktokSdk.initialize({
+        ios: {
+          appId: "6502907052",
+          tiktokAppId: "7486311276579553296",
+          accessToken: "TTcbLIYumx68BAC5kZf0vks4qkaSOGfc",
+        },
+        android: {
+          appId: "app.trevi.fintech",
+          tiktokAppId: "7486876279556620304",
+          accessToken: "TTWNceGdeMAxYiVC3SIy1NEs8kxcRjfF",
+        },
+        debug: true,
+      });
+      setStatus("initialized");
+    } catch (error) {
+      let errorMessage = error.message;
+      if (error.code === "ERR_INVALID_ARGS_NUMBER") {
+        errorMessage = "Invalid arguments passed to TikTok SDK";
+      }
+      setStatus(`failed: ${errorMessage}`);
+    }
+  }
+
+  async function trackTestEvent() {
+    try {
+      await ExpoTiktokSdk.trackEvent("test_event", {
+        value: 123.45,
+        currency: "USD",
+        content_type: "product",
+        content_id: "test_123",
+        content_name: "Test Product",
+      });
+      setStatus("event tracked");
+    } catch (error) {
+      console.error("Error tracking event:", error);
+      setStatus(`tracking failed: ${error.message}`);
+    }
+  }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.container}>
-        <Text style={styles.header}>Module API Example</Text>
-        <Group name="Constants">
-          <Text>{ExpoTiktokSdk.PI}</Text>
-        </Group>
-        <Group name="Functions">
-          <Text>{ExpoTiktokSdk.hello()}</Text>
-        </Group>
-        <Group name="Async functions">
-          <Button
-            title="Set value"
-            onPress={async () => {
-              await ExpoTiktokSdk.setValueAsync('Hello from JS!');
-            }}
-          />
-        </Group>
-        <Group name="Events">
-          <Text>{onChangePayload?.value}</Text>
-        </Group>
-        <Group name="Views">
-          <ExpoTiktokSdkView
-            url="https://www.example.com"
-            onLoad={({ nativeEvent: { url } }) => console.log(`Loaded: ${url}`)}
-            style={styles.view}
-          />
-        </Group>
-      </ScrollView>
-    </SafeAreaView>
-  );
-}
-
-function Group(props: { name: string; children: React.ReactNode }) {
-  return (
-    <View style={styles.group}>
-      <Text style={styles.groupHeader}>{props.name}</Text>
-      {props.children}
+    <View style={styles.container}>
+      <Text>Status: {status}</Text>
+      <Button title="Track Test Event" onPress={trackTestEvent} />
     </View>
   );
 }
 
-const styles = {
-  header: {
-    fontSize: 30,
-    margin: 20,
-  },
-  groupHeader: {
-    fontSize: 20,
-    marginBottom: 20,
-  },
-  group: {
-    margin: 20,
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    padding: 20,
-  },
+const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#eee',
+    alignItems: "center",
+    justifyContent: "center",
   },
-  view: {
-    flex: 1,
-    height: 200,
-  },
-};
+});

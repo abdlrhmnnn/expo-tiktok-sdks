@@ -1,50 +1,107 @@
 package expo.modules.tiktoksdk
 
+import android.content.pm.PackageManager
+import com.tiktok.TikTokBusinessSdk
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
-import java.net.URL
+import expo.modules.kotlin.exception.CodedException
 
 class ExpoTiktokSdkModule : Module() {
-  // Each module class must implement the definition function. The definition consists of components
-  // that describes the module's functionality and behavior.
-  // See https://docs.expo.dev/modules/module-api for more details about available components.
   override fun definition() = ModuleDefinition {
-    // Sets the name of the module that JavaScript code will use to refer to the module. Takes a string as an argument.
-    // Can be inferred from module's class name, but it's recommended to set it explicitly for clarity.
-    // The module will be accessible from `requireNativeModule('ExpoTiktokSdk')` in JavaScript.
     Name("ExpoTiktokSdk")
 
-    // Sets constant properties on the module. Can take a dictionary or a closure that returns a dictionary.
-    Constants(
-      "PI" to Math.PI
-    )
+    AsyncFunction("initialize") { config: Map<String, Any> ->
+      val context = appContext.reactContext ?: 
+        throw CodedException("CONTEXT_UNAVAILABLE", "React context is not available")
 
-    // Defines event names that the module can send to JavaScript.
-    Events("onChange")
+      try {
+        val androidConfig = config["android"] as? Map<String, Any> ?:
+          throw CodedException("INVALID_CONFIG", "Android configuration missing")
+          
+        val ttConfig = TikTokBusinessSdk.TTConfig(context)
+          .setAppId(androidConfig["appId"] as? String ?: 
+            throw CodedException("INVALID_CONFIG", "appId is required"))
+          .setTTAppId(androidConfig["tiktokAppId"] as? String ?: 
+            throw CodedException("INVALID_CONFIG", "tiktokAppId is required"))
 
-    // Defines a JavaScript synchronous function that runs the native code on the JavaScript thread.
-    Function("hello") {
-      "Hello world! 👋"
-    }
+        androidConfig["accessToken"]?.let { ttConfig.setAccessToken(it as String) }
 
-    // Defines a JavaScript function that always returns a Promise and whose native code
-    // is by default dispatched on the different thread than the JavaScript runtime runs on.
-    AsyncFunction("setValueAsync") { value: String ->
-      // Send an event to JavaScript.
-      sendEvent("onChange", mapOf(
-        "value" to value
-      ))
-    }
+        // Configure debug mode
+        if (config["debug"] == true) {
+          ttConfig.openDebugMode()
+          ttConfig.setLogLevel(TikTokBusinessSdk.LogLevel.DEBUG)
+        }
 
-    // Enables the module to be used as a native view. Definition components that are accepted as part of
-    // the view definition: Prop, Events.
-    View(ExpoTiktokSdkView::class) {
-      // Defines a setter for the `url` prop.
-      Prop("url") { view: ExpoTiktokSdkView, url: URL ->
-        view.webView.loadUrl(url.toString())
+        // Configure automatic events
+        if (config["disableAutoEvents"] == true) {
+          ttConfig.disableAutoEvents()
+          ttConfig.disableInstallLogging()
+          ttConfig.disableLaunchLogging()
+          ttConfig.disableRetentionLogging()
+        }
+
+        // Disable tracking initially
+        ttConfig.disableAutoStart()
+
+        TikTokBusinessSdk.initializeSdk(ttConfig) { success ->
+          if (success) {
+            // Start tracking after successful initialization
+            TikTokBusinessSdk.startTrack()
+          }
+        }
+      } catch (e: Exception) {
+        throw CodedException("INIT_FAILED", "Failed to initialize TikTok SDK", e)
       }
-      // Defines an event that the view can send to JavaScript.
-      Events("onLoad")
+    }
+
+    AsyncFunction("trackEvent") { eventName: String, properties: Map<String, Any>? ->
+      try {
+        if (properties != null) {
+          TikTokBusinessSdk.trackEvent(eventName, properties)
+        } else {
+          TikTokBusinessSdk.trackEvent(eventName)
+        }
+      } catch (e: Exception) {
+        throw CodedException("TRACK_FAILED", "Failed to track event", e)
+      }
+    }
+
+    AsyncFunction("identify") { params: Map<String, Any?> ->
+      try {
+        TikTokBusinessSdk.identify(
+          params["externalId"] as? String,
+          params["externalUserName"] as? String,
+          params["phoneNumber"] as? String,
+          params["email"] as? String
+        )
+      } catch (e: Exception) {
+        throw CodedException("IDENTIFY_FAILED", "Failed to identify user", e)
+      }
+    }
+
+    AsyncFunction("logout") {
+      try {
+        TikTokBusinessSdk.logout()
+      } catch (e: Exception) {
+        throw CodedException("LOGOUT_FAILED", "Failed to logout", e)
+      }
+    }
+
+    AsyncFunction("getTrackingStatus") {
+      try {
+        val context = appContext.reactContext ?: return@AsyncFunction "unavailable"
+        val packageManager = context.packageManager
+        val applicationInfo = packageManager.getApplicationInfo(
+          context.packageName, 
+          PackageManager.GET_META_DATA
+        )
+        val bundle = applicationInfo.metaData
+        
+        val trackingEnabled = bundle.getString("TikTokTrackingEnabled", "1") == "1"
+        if (trackingEnabled) "authorized" else "denied"
+      } catch (e: Exception) {
+        "unavailable"
+      }
     }
   }
 }

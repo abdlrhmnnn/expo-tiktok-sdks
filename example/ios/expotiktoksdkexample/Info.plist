@@ -27,12 +27,19 @@
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
-          <string>expo.modules.tiktoksdk.example</string>
+          <string>your-scheme</string>
         </array>
       </dict>
     </array>
     <key>CFBundleVersion</key>
     <string>1</string>
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+      <string>tiktokopensdk</string>
+      <string>tiktoksharesdk</string>
+      <string>snssdk1180</string>
+      <string>snssdk1233</string>
+    </array>
     <key>LSMinimumSystemVersion</key>
     <string>12.0</string>
     <key>LSRequiresIPhoneOS</key>
@@ -44,6 +51,8 @@
       <key>NSAllowsLocalNetworking</key>
       <true/>
     </dict>
+    <key>TikTokAppID</key>
+    <string>6502907052</string>
     <key>UILaunchStoryboardName</key>
     <string>SplashScreen</string>
     <key>UIRequiredDeviceCapabilities</key>

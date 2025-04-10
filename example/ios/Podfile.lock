@@ -38,6 +38,7 @@ PODS:
     - Yoga
   - ExpoTiktokSdk (0.1.0):
     - ExpoModulesCore
+    - TikTokBusinessSDK
   - FBLazyVector (0.76.8)
   - fmt (9.1.0)
   - glog (0.3.5)
@@ -1547,6 +1548,7 @@ PODS:
     - React-perflogger (= 0.76.8)
     - React-utils (= 0.76.8)
   - SocketRocket (0.7.1)
+  - TikTokBusinessSDK (1.3.8)
   - Yoga (0.0.0)
 
 DEPENDENCIES:
@@ -1627,6 +1629,7 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - SocketRocket
+    - TikTokBusinessSDK
 
 EXTERNAL SOURCES:
   boost:
@@ -1783,7 +1786,7 @@ SPEC CHECKSUMS:
   ExpoFont: 773955186469acc5108ff569712a2d243857475f
   ExpoKeepAwake: 2a5f15dd4964cba8002c9a36676319a3394c85c7
   ExpoModulesCore: 0bcea8c26791a8f0aed1d4a961f1165e1fc657d4
-  ExpoTiktokSdk: 2a3ab6c169092e6a0285ab8c6dfd520e6d92a2ac
+  ExpoTiktokSdk: 167b17121502d4de58815ca4e751bcbd13432995
   FBLazyVector: 8fa248633c0736c734d06b43e0f81b1a1bf91395
   fmt: 10c6e61f4be25dc963c36bd73fc7b1705fe975be
   glog: 08b301085f15bcbb6ff8632a8ebaf239aae04e6a
@@ -1845,6 +1848,7 @@ SPEC CHECKSUMS:
   ReactCodegen: cb798eece8fb8b4c98689302d76608cdca62b563
   ReactCommon: 90c3783fe9735fc5aeaf3064eca54aac277bb976
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
+  TikTokBusinessSDK: db839e24b244c2693c1e3bb635a4c3cae4a8ab6d
   Yoga: a78f2e4fdc1bf5885ae1855bf495dfde0dad8946
 
 PODFILE CHECKSUM: 18f39eccccc042ddae509847ba0203aeb81b5ca2

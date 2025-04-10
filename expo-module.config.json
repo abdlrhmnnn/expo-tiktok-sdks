@@ -1,17 +1,13 @@
 {
-  "platforms": [
-    "apple",
-    "android",
-    "web"
-  ],
-  "apple": {
-    "modules": [
-      "ExpoTiktokSdkModule"
-    ]
-  },
+  "name": "expo-tiktok-sdk",
+  "platforms": ["android", "ios"],
   "android": {
-    "modules": [
-      "expo.modules.tiktoksdk.ExpoTiktokSdkModule"
-    ]
-  }
+    "package": "expo.modules.tiktoksdk",
+    "modules": ["expo.modules.tiktoksdk.ExpoTiktokSdkModule"]
+  },
+  "ios": {
+    "package": "ExpoTiktokSdk",
+    "modules": ["ExpoTiktokSdkModule"]
+  },
+  "plugin": "./plugin.js"
 }
