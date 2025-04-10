@@ -25,25 +25,35 @@ npm install expo-tiktok-sdk
 
 ### Configure for iOS
 
-1. Make sure you have CocoaPods installed:
+# Development
+
+To build and test the module locally:
+
+1. Build the package and plugin:
 
 ```bash
-sudo gem install cocoapods
+npm run build
+npm run build:plugin
 ```
 
-2. The module will automatically add the TikTok SDK to your project when you run:
+2. Clean install dependencies:
 
 ```bash
-npx pod-install
+rm -rf node_modules
+npm install
 ```
 
-3. If you need to update the SDK version later, you can run:
+3. Rebuild native code:
 
 ```bash
-cd ios && pod update TikTokBusinessSDK
+npx expo prebuild --clean
 ```
 
-Run `npx pod-install` after installing the npm package.
+4. Run iOS simulator:
+
+```bash
+npx expo run:ios
+```
 
 # Contributing
 
