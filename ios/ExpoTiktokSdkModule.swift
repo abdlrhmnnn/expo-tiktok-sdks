@@ -50,15 +50,11 @@ public class ExpoTiktokSdkModule: Module {
         
         AsyncFunction("trackEvent") { (eventName: String, properties: [String: Any]?, promise: Promise) in
             DispatchQueue.main.async {
-                let event = TikTokBaseEvent(name: eventName)
-                
                 if let properties = properties {
-                    for (key, value) in properties {
-                        event.addProperty(withKey: key, value: value)
-                    }
+                    TikTokBusiness.trackEvent(eventName, withProperties: properties)
+                } else {
+                    TikTokBusiness.trackEvent(eventName)
                 }
-                
-                TikTokBusiness.trackTTEvent(event)
                 promise.resolve(nil)
             }
         }

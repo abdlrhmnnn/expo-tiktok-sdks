@@ -24,6 +24,19 @@ export default function App() {
         },
         debug: true,
       });
+
+      // Enable tracking after initialization
+      ExpoTiktokSdk.getTrackingStatus()
+        .then((status) => {
+          if (status === "authorized") {
+            console.log("Tracking is authorized");
+          } else {
+            console.log("Tracking is not authorized");
+          }
+        })
+        .catch((error) => {
+          console.error("Error getting tracking status:", error);
+        });
       setStatus("initialized");
     } catch (error) {
       let errorMessage = error.message;
@@ -36,12 +49,15 @@ export default function App() {
 
   async function trackTestEvent() {
     try {
-      await ExpoTiktokSdk.trackEvent("test_event", {
+      // Using a standard event name from TikTok's documentation
+      await ExpoTiktokSdk.trackEvent("CompletePayment", {
         value: 123.45,
         currency: "USD",
+        description: "Test purchase",
         content_type: "product",
         content_id: "test_123",
         content_name: "Test Product",
+        quantity: 1,
       });
       setStatus("event tracked");
     } catch (error) {
